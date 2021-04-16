@@ -1,0 +1,8 @@
+//
+// Created by dianh on 2021/04/16.
+//
+
+#ifndef SWIN_TRANSFORMER_CPP_RESIDUAL_H
+#define SWIN_TRANSFORMER_CPP_RESIDUAL_H
+
+#endif //SWIN_TRANSFORMER_CPP_RESIDUAL_H
