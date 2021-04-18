@@ -24,10 +24,11 @@ namespace shift_window_transformer {
             delete linear2;
         }
 
-        void forward(const std::vector<T> &input, std::vector<T> &output) {
-            std::vector<T> tmp1{};
+        void forward(const Tensor<T> &input, Tensor<T> &output) {
+            Tensor<T> tmp1{};
             linear1->forward(input, tmp1);
-            std::vector<T> tmp2{};
+            Tensor<T> tmp2{};
+            tmp2.shape.insert(tmp2.shape.end(), tmp1.shape.begin(), tmp1.shape.end());
             for (auto item: tmp1) {
                 tmp2.push_back(GELU(item));
             }
@@ -35,8 +36,8 @@ namespace shift_window_transformer {
         }
 
     private:
-        Linear <T> *linear1;
-        Linear <T> *linear2;
+        Linear<T> *linear1;
+        Linear<T> *linear2;
         int dim;
         int hidden_dim;
     };

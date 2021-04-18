@@ -8,7 +8,7 @@
 #include "feed_forward.h"
 #include "cyclic_shift.h"
 #include "functions.h"
-
+#include "tensor.h"
 using namespace std;
 typedef float data_t;
 auto *swin_t = new shift_window_transformer::SwinTransformer<data_t>(
@@ -34,8 +34,8 @@ int main() {
         int out_feature = 100;
         int batch = 10;
         auto *layer = new shift_window_transformer::Linear<data_t>(in_feature, out_feature);
-        vector<data_t> input = vector<data_t>(in_feature * batch, 0);
-        vector<data_t> output{};
+        shift_window_transformer::Tensor<data_t> input = shift_window_transformer::Tensor<data_t>(in_feature * batch, 0);
+        shift_window_transformer::Tensor<data_t> output{};
         layer->forward(input, output);
         std::cout << "Ok" << std::endl;
     } catch (...) {
@@ -52,8 +52,8 @@ int main() {
         int hidden_dim = 10;
         int batch = 10;
         auto *layer = new shift_window_transformer::FeedForward<data_t>(dim, hidden_dim);
-        vector<data_t> input = vector<data_t>(batch * dim, 0);
-        vector<data_t> output{};
+        shift_window_transformer::Tensor<data_t> input = shift_window_transformer::Tensor<data_t>(batch * dim, 0);
+        shift_window_transformer::Tensor<data_t> output{};
         layer->forward(input, output);
         std::cout << "Ok" << std::endl;
     } catch (...) {
@@ -66,8 +66,8 @@ int main() {
         std::cout << "Cyclic Shift Test: ";
         std::array<int, 3> arr{3, 224, 224};
         auto *layer = new shift_window_transformer::CyclicShift<data_t>(arr, 5);
-        std::vector<data_t> input(3 * 224 * 224, 0);
-        std::vector<data_t> output{};
+        shift_window_transformer::Tensor<data_t> input(3 * 224 * 224, 0);
+        shift_window_transformer::Tensor<data_t> output{};
         layer->forward(input, output);
         std::cout << "Ok" << std::endl;
     } catch (...) {

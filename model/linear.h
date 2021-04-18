@@ -25,8 +25,16 @@ namespace shift_window_transformer {
                 bias.resize(out_feature);
         }
 
-        void forward(const std::vector<T> &input, std::vector<T> &output) {
+/**
+ *
+ * @param input DIM x INPUT_FEATURE
+ * @param output DIM X OUTPUT_FEATURE
+ */
+        void forward(const Tensor <T> &input, Tensor <T> &output) {
             output.clear();
+            output.shape.clear();
+            output.shape.insert(output.shape.end(), input.shape.begin(), input.shape.end());
+            output.shape.back() = out_feature;
             for (auto pos = 0; pos < input.size(); pos += in_feature) {
                 std::vector<T> tmp;
                 if (use_bias) {

@@ -5,6 +5,7 @@
 #ifndef SWIN_TRANSFORMER_CPP_CYCLIC_SHIFT_H
 #define SWIN_TRANSFORMER_CPP_CYCLIC_SHIFT_H
 
+#include "tensor.h"
 #include "layer.h"
 
 namespace shift_window_transformer {
@@ -12,11 +13,13 @@ namespace shift_window_transformer {
     class CyclicShift : virtual public Layer<T> {
     public:
         CyclicShift(const std::array<int, 3> &dims, int displacement) : displacement(displacement), dim(dims) {
+
         }
 
-        void forward(const std::vector<T> &input, std::vector<T> &output) {
+        void forward(const Tensor<T> &input, Tensor<T> &output) {
             int feature_size = dim[1] * dim[2];
-            output.clear();
+            output.shape.clear();
+            output.shape.insert(output.shape.begin(), input.shape.begin(), input.shape.end());
             for (int feature = 0; feature < input.size(); feature += feature_size) {
                 std::vector<T> tmp(feature_size);
                 for (int i = 0; i < dim[1]; ++i) {
@@ -33,7 +36,6 @@ namespace shift_window_transformer {
     private:
         int displacement;
         std::array<int, 3> dim;
-
     };
 }
 #endif //SWIN_TRANSFORMER_CPP_CYCLIC_SHIFT_H

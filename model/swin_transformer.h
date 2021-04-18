@@ -31,7 +31,7 @@ namespace shift_window_transformer {
                                                      downscaling_factors(downscalingFactors),
                                                      relative_pos_embedding(relativePosEmbedding) {}
 
-        void forward(const std::vector<T> &input, std::vector<T> &output) {
+        void forward(const Tensor<T> &input, Tensor<T> &output) {
 
         }
 
