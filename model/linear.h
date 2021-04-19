@@ -12,7 +12,7 @@ namespace shift_window_transformer {
     template<typename T>
     class Linear : virtual public Layer<T> {
     public:
-        Linear(int in_feature, int out_feature) : in_feature(in_feature), out_feature(out_feature) {
+        Linear(int in_feature, int out_feature) : in_feature(in_feature), out_feature(out_feature), use_bias(true) {
             weights.resize(in_feature * out_feature);
             bias.resize(out_feature);
         }
