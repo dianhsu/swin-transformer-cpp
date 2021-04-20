@@ -10,21 +10,20 @@
 
 namespace shift_window_transformer {
     template<typename T>
-    class PreNorm : virtual public Layer {
+    class PreNorm : virtual public Layer<T> {
     public:
-        PreNorm(Layer<T> *fn, int dim) : fn(fn) {
-            layerNorm = LayerNorm<T>(dim);
+        PreNorm(Layer <T> *fn, int dim) : fn(fn), layerNorm(dim) {
         }
 
-        void forward(const Tensor<T> &input, Tensor<T> &output) {
+        void forward(const Tensor <T> &input, Tensor <T> &output) {
             Tensor<T> tmp{};
             layerNorm.forward(input, tmp);
             fn->forward(tmp, output);
         }
 
     private:
-        Layer<T> *fn = nullptr;
-        LayerNorm<T> layerNorm;
+        Layer <T> *fn = nullptr;
+        LayerNorm <T> layerNorm;
     };
 }
 #endif //SWIN_TRANSFORMER_CPP_PRE_NORM_H

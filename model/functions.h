@@ -15,18 +15,19 @@ namespace shift_window_transformer {
         // approximate function provide by https://arxiv.org/pdf/1606.08415.pdf
     }
 
-    Tensor<int> *get_relative_distances(unsigned window_size) {
-        auto *ret = new Tensor<int>{};
-        std::vector<std::pair<int, int>> tmp{};
-        for (unsigned i = 0; i < window_size; ++i) {
-            for (unsigned j = 0; j < window_size; ++j) {
-                tmp.emplace_back(i, j);
+    template<typename T>
+    Tensor <T> *get_relative_distances(int window_size) {
+        auto *ret = new Tensor<T>{};
+        std::vector<std::pair<T, T>> tmp{};
+        for (int i = 0; i < window_size; ++i) {
+            for (int j = 0; j < window_size; ++j) {
+                tmp.emplace_back((T) i, (T) j);
             }
         }
-        for (unsigned i1 = 0; i1 < window_size; ++i1) {
-            for (unsigned j1 = 0; j1 < window_size; ++j1) {
-                for (unsigned i2 = 0; i2 < window_size; ++i2) {
-                    for (unsigned j2 = 0; j2 < window_size; ++j2) {
+        for (int i1 = 0; i1 < window_size; ++i1) {
+            for (int j1 = 0; j1 < window_size; ++j1) {
+                for (int i2 = 0; i2 < window_size; ++i2) {
+                    for (int j2 = 0; j2 < window_size; ++j2) {
                         ret->push_back(tmp[i2 * window_size + j2].first - tmp[i1 * window_size + j1].first);
                         ret->push_back(tmp[i2 * window_size + j2].second - tmp[i1 * window_size + j1].second);
                     }

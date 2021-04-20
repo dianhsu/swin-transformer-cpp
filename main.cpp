@@ -71,9 +71,10 @@ int main() {
  */
     try {
         std::cout << "Cyclic Shift Test: ";
-        std::array<int, 3> arr{3, 224, 224};
-        auto *layer = new shift_window_transformer::CyclicShift<data_t>(arr, 5);
+
+        auto *layer = new shift_window_transformer::CyclicShift<data_t>(5);
         shift_window_transformer::Tensor<data_t> input(3 * 224 * 224, 0);
+        input.shape = {3, 224, 224};
         shift_window_transformer::Tensor<data_t> output{};
         layer->forward(input, output);
         std::cout << "Ok" << std::endl;
@@ -85,7 +86,7 @@ int main() {
  * Test get_relative_distances
  */
     try {
-        auto *tensor = shift_window_transformer::get_relative_distances(4);
+        auto *tensor = shift_window_transformer::get_relative_distances<data_t>(4);
         delete tensor;
     } catch (...) {
 

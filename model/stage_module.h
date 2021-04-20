@@ -21,12 +21,10 @@ namespace shift_window_transformer {
                                                                                                   downscaling_factor) {
             assert(layers_cnt % 2 == 0);
             for (int i = 0; i < layers_cnt; i += 2) {
-                layers.push_back(
-                        SwinBlock<T>(hidden_dimension, num_heads, head_dim, hidden_dimension * 4, false, window_size,
-                                     relative_pos_embedding));
-                layers.push_back(
-                        SwinBlock<T>(hidden_dimension, num_heads, head_dim, hidden_dimension * 4, true, window_size,
-                                     relative_pos_embedding));
+                layers.emplace_back(hidden_dimension, num_heads, head_dim, hidden_dimension * 4, false, window_size,
+                                     relative_pos_embedding);
+                layers.emplace_back(hidden_dimension, num_heads, head_dim, hidden_dimension * 4, true, window_size,
+                                     relative_pos_embedding);
             }
         }
 

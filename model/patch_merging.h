@@ -13,7 +13,8 @@ namespace shift_window_transformer {
     template<typename T>
     class PatchMerging : public Layer<T> {
     public:
-        PatchMerging(int in_channels, int out_channels, int downscaling_factor):layer(in_channels * downscaling_factor * downscaling_factor, out_channels){
+        PatchMerging(int in_channels, int out_channels, int downscaling_factor) : layer(
+                in_channels * downscaling_factor * downscaling_factor, out_channels) {
             this->in_channels = in_channels;
             this->out_channels = out_channels;
             this->downscaling_factor = downscaling_factor;
@@ -31,8 +32,8 @@ namespace shift_window_transformer {
             int new_h = h / downscaling_factor, new_w = w / downscaling_factor;
             Tensor<T> tmp{};
             tmp.resize(input.size());
-            tmp.shape = {(unsigned) new_h, (unsigned) new_w,
-                         (unsigned) (vec[0] * downscaling_factor * downscaling_factor)};
+            tmp.shape = {new_h, new_w,
+                         (vec[0] * downscaling_factor * downscaling_factor)};
             /*
              * Unfold and reshape
              */

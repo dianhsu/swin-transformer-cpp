@@ -18,23 +18,22 @@ namespace shift_window_transformer {
     public:
         WindowAttention(int dim, int heads, int headDim, bool shifted, int windowSize, bool relativePosEmbedding)
                 : shifted(shifted),
-                  scale(1 / sqrt(head_dim)),
+                  scale(1 / sqrt(headDim)),
                   innerDim(heads * headDim),
                   windowSize(windowSize),
-                  relativePosEmbedding(relativePosEmbedding) {
+                  relativePosEmbedding(relativePosEmbedding), to_qkv(dim, innerDim * 3, false), to_out(innerDim, dim) {
             if (shifted) {
-                int displacement = window_size / 2;
-                cyclicShift = CyclicShift<T>(-displacement);
-                cyclicBackShift = CyclicShift<T>(displacement);
+                int displacement = windowSize / 2;
+                cyclicShift = new CyclicShift<T>(-displacement);
+                cyclicBackShift = new CyclicShift<T>(displacement);
                 upperLowerMask = create_mask<T>(windowSize, displacement, true, false);
                 lowerRightMask = create_mask<T>(windowSize, displacement, false, true);
             }
-            to_qkv = Linear<T>(dim, innerDim * 3, false);
             std::random_device rd{};
             std::mt19937 gen{rd()};
             std::normal_distribution<> d{0, 1};
             if (relativePosEmbedding) {
-                relativeIndices = get_relative_distances(windowSize);
+                relativeIndices = get_relative_distances<T>(windowSize);
                 for (auto &item: *relativeIndices) {
                     item = item + windowSize - 1;
                 }
@@ -54,13 +53,12 @@ namespace shift_window_transformer {
                 posEmbedding->shape.push_back(windowSize * windowSize);
                 posEmbedding->shape.push_back(windowSize * windowSize);
             }
-            to_out = Linear<T>(innerDim, dim);
         }
 
         void forward(const Tensor<T> &input, Tensor<T> &output) {
             Tensor<T> tmp{};
             if (shifted) {
-                cyclicShift(input, tmp);
+                cyclicShift->forward(input, tmp);
             } else {
                 tmp.insert(tmp.end(), input.begin(), input.end());
                 tmp.shape.insert(tmp.shape.end(), input.shape.begin(), input.shape.end());
@@ -69,7 +67,7 @@ namespace shift_window_transformer {
             int n_w = tmp.shape[2];
             int h = heads;
             Tensor<T> qkv{};
-            to_qkv(tmp, qkv);
+            to_qkv.forward(tmp, qkv);
             // TODO: TO FINISH THIS MODULE
         }
 
@@ -82,11 +80,15 @@ namespace shift_window_transformer {
                 delete relativeIndices;
             if (posEmbedding != nullptr)
                 delete posEmbedding;
+            if (cyclicShift != nullptr)
+                delete cyclicShift;
+            if (cyclicBackShift != nullptr)
+                delete cyclicBackShift;
         }
 
     private:
-        CyclicShift<T> cyclicShift;
-        CyclicShift<T> cyclicBackShift;
+        CyclicShift<T> *cyclicShift;
+        CyclicShift<T> *cyclicBackShift;
         Linear<T> to_qkv;
         Linear<T> to_out;
         Tensor<T> *upperLowerMask;

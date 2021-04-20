@@ -14,14 +14,12 @@ namespace shift_window_transformer {
     class Residual : virtual public Layer<T> {
     public:
         Residual() : fn(nullptr) {
-
         }
 
-        Residual(Layer<T> *fn) : fn(fn) {
-
+        explicit Residual(Layer<T> *fn) : fn(fn) {
         }
 
-        void forward(const Tensor<T> &input, const Tensor<T> &output) {
+        void forward(const Tensor<T> &input, Tensor<T> &output) {
             assert(fn != nullptr);
             fn->forward(input, output);
             for (int i = 0; i < output.size(); ++i) {

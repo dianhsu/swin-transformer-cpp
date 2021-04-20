@@ -8,7 +8,7 @@
 #include <bits/stdc++.h>
 
 namespace shift_window_transformer {
-    typedef std::vector<unsigned> TensorShape;
+    typedef std::vector<int> TensorShape;
 
     template<typename T>
     class Tensor : public std::vector<T> {
