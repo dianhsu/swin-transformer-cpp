@@ -10,9 +10,9 @@
 
 namespace shift_window_transformer {
     template<typename T>
-    class Linear : virtual public Layer<T> {
+    class Linear : public Layer<T> {
     public:
-        Linear(int in_feature, int out_feature) : in_feature(in_feature), out_feature(out_feature), use_bias(true) {
+        Linear(int i_feature, int o_feature) : in_feature(i_feature), out_feature(o_feature), use_bias(true) {
             weights.resize(in_feature * out_feature);
             bias.resize(out_feature);
         }
@@ -31,6 +31,7 @@ namespace shift_window_transformer {
  * @param output DIM X OUTPUT_FEATURE
  */
         void forward(const Tensor <T> &input, Tensor <T> &output) {
+            assert(input.shape.size() and input.shape.back() == in_feature);
             output.clear();
             output.shape.clear();
             output.shape.insert(output.shape.end(), input.shape.begin(), input.shape.end());
@@ -49,6 +50,7 @@ namespace shift_window_transformer {
                 }
                 output.insert(output.end(), tmp.begin(), tmp.end());
             }
+            assert(output.size() == input.size() / in_feature * out_feature);
         }
 
     private:

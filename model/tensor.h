@@ -23,7 +23,17 @@ namespace shift_window_transformer {
 
         TensorShape shape;
 
+        friend std::ostream &operator<<(std::ostream &os, const Tensor<T> &vec) {
+            os << "[";
+            for (auto i = 0; i < vec.shape.size(); ++i) {
+                if (i)
+                    os << ", ";
+                os << vec.shape[i];
+            }
+            os << "]";
+            return os;
+        }
     };
-
 }
+
 #endif //SWIN_TRANSFORMER_CPP_TENSOR_H

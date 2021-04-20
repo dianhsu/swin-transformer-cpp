@@ -4,6 +4,7 @@
 
 #ifndef SWIN_TRANSFORMER_CPP_LAYER_H
 #define SWIN_TRANSFORMER_CPP_LAYER_H
+
 #include <bits/stdc++.h>
 #include "tensor.h"
 
@@ -11,7 +12,9 @@ namespace shift_window_transformer {
     template<typename T>
     class Layer {
     public:
-        virtual void forward(const Tensor<T> &input, Tensor<T> &output) = 0;
+        virtual void forward(const Tensor<T> &input, Tensor<T> &output) {
+
+        }
     };
 
 }

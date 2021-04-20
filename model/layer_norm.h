@@ -27,6 +27,8 @@ namespace shift_window_transformer {
                 // Var(x) = E(x^2) - E(x)^2
                 T avg = 0;
                 T avg2 = 0;
+                T sum = 0;
+                T sum2 = 0;
                 for (int j = 0; j < dim; ++j) {
                     sum += input[i + j];
                     sum2 += input[i + j] * input[i + j];
