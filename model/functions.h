@@ -11,7 +11,7 @@
 namespace shift_window_transformer {
     template<typename T>
     T GELU(T x) {
-        return x * (1 + tanh(sqrt(2 / M_PI) * (x + 0.044715 * x * x * x)));
+        return 0.5 * x * (1 + tanh(sqrt(2.0 / M_PI) * (x + 0.044715 * x * x * x)));
         // approximate function provide by https://arxiv.org/pdf/1606.08415.pdf
     }
 

@@ -12,17 +12,28 @@ namespace shift_window_transformer {
     template<typename T>
     class Linear : public Layer<T> {
     public:
-        Linear(int i_feature, int o_feature) : in_feature(i_feature), out_feature(o_feature), use_bias(true) {
-            weights.resize(in_feature * out_feature);
-            bias.resize(out_feature);
-        }
+
 
         Linear(int in_feature, int out_feature, bool use_bias) : in_feature(in_feature),
                                                                  out_feature(out_feature),
                                                                  use_bias(use_bias) {
-            weights.resize(in_feature * out_feature);
+            weights = new std::vector<T>(in_feature * out_feature, 0);
             if (use_bias)
-                bias.resize(out_feature);
+                bias = new std::vector<T>(out_feature, 0);
+        }
+
+        Linear(int i_feature, int o_feature) : Linear(i_feature, o_feature, true) {
+        }
+
+        ~Linear() {
+            if (weights != nullptr) {
+                delete weights;
+                weights = nullptr;
+            }
+            if (bias != nullptr) {
+                delete bias;
+                bias = nullptr;
+            }
         }
 
 /**
@@ -37,15 +48,19 @@ namespace shift_window_transformer {
             output.shape.insert(output.shape.end(), input.shape.begin(), input.shape.end());
             output.shape.back() = out_feature;
             for (auto pos = 0; pos < input.size(); pos += in_feature) {
-                std::vector<T> tmp;
+                std::vector<T> tmp{};
                 if (use_bias) {
-                    tmp = std::vector<T>(this->bias);
+                    for (auto item: *(this->bias)) {
+                        tmp.push_back(item);
+                    }
                 } else {
-                    tmp = std::vector<T>(out_feature, 0);
+                    for (int i = 0; i < out_feature; ++i) {
+                        tmp.push_back(0);
+                    }
                 }
                 for (int i = 0; i < in_feature; ++i) {
                     for (int j = 0; j < out_feature; ++j) {
-                        tmp[j] += input[i + pos] * this->weights[i * out_feature + j];
+                        tmp[j] += input[i + pos] * (*(this->weights))[i * out_feature + j];
                     }
                 }
                 output.insert(output.end(), tmp.begin(), tmp.end());
@@ -54,7 +69,7 @@ namespace shift_window_transformer {
         }
 
     private:
-        std::vector<T> weights, bias;
+        std::vector<T> *weights = nullptr, *bias = nullptr;
         int in_feature, out_feature;
         bool use_bias;
     };

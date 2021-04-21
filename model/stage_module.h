@@ -20,20 +20,31 @@ namespace shift_window_transformer {
                                                                                                   hidden_dimension,
                                                                                                   downscaling_factor) {
             assert(layers_cnt % 2 == 0);
+
             for (int i = 0; i < layers_cnt; i += 2) {
-                layers.emplace_back(hidden_dimension, num_heads, head_dim, hidden_dimension * 4, false, window_size,
-                                     relative_pos_embedding);
-                layers.emplace_back(hidden_dimension, num_heads, head_dim, hidden_dimension * 4, true, window_size,
-                                     relative_pos_embedding);
+                auto ptr1 = new SwinBlock<T>(hidden_dimension, num_heads, head_dim, hidden_dimension * 4, false,
+                                             window_size,
+                                             relative_pos_embedding);
+                auto ptr2 = new SwinBlock<T>(hidden_dimension, num_heads, head_dim, hidden_dimension * 4, true,
+                                             window_size,
+                                             relative_pos_embedding);
+                layers.push_back(ptr1);
+                layers.push_back(ptr2);
+            }
+        }
+
+        ~StageModule() {
+            for (int i = 0; i < layers.size(); ++i) {
+                delete layers[i];
             }
         }
 
         void forward(const Tensor<T> &input, Tensor<T> &output) {
             Tensor<T> tmp{};
             patch_partition.forward(input, tmp);
-            for (auto &item: layers) {
+            for (auto blockPtr: layers) {
                 Tensor<T> tmp_loop{};
-                item.forward(tmp, tmp_loop);
+                blockPtr->forward(tmp, tmp_loop);
                 tmp = tmp_loop;
             }
             output.shape = {tmp.shape[2], tmp.shape[0], tmp.shape[1]};
@@ -50,7 +61,7 @@ namespace shift_window_transformer {
 
     private:
         PatchMerging<T> patch_partition;
-        std::vector<SwinBlock<T>> layers;
+        std::vector<SwinBlock<T> *> layers;
 
     };
 }

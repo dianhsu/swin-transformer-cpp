@@ -26,12 +26,30 @@ namespace shift_window_transformer {
         }
 
         ~SwinBlock() {
-            if (windowAttention) delete windowAttention;
-            if (feedForward) delete feedForward;
-            if (preNorm1) delete preNorm1;
-            if (preNorm2) delete preNorm2;
-            if (residual1) delete residual1;
-            if (residual2) delete residual2;
+            if (windowAttention != nullptr) {
+                delete windowAttention;
+                windowAttention = nullptr;
+            }
+            if (feedForward != nullptr) {
+                delete feedForward;
+                feedForward = nullptr;
+            }
+            if (preNorm1 != nullptr) {
+                delete preNorm1;
+                preNorm1 = nullptr;
+            }
+            if (preNorm2 != nullptr) {
+                delete preNorm2;
+                preNorm2 = nullptr;
+            }
+            if (residual1 != nullptr) {
+                delete residual1;
+                residual1 = nullptr;
+            }
+            if (residual2 != nullptr) {
+                delete residual2;
+                residual2 = nullptr;
+            }
         }
 
         void forward(const Tensor<T> &input, Tensor<T> &output) {
@@ -41,10 +59,10 @@ namespace shift_window_transformer {
         }
 
     private:
-        Residual<T> *residual1, *residual2;
-        PreNorm<T> *preNorm1, *preNorm2;
-        WindowAttention<T> *windowAttention;
-        FeedForward<T> *feedForward;
+        Residual<T> *residual1 = nullptr, *residual2 = nullptr;
+        PreNorm<T> *preNorm1 = nullptr, *preNorm2 = nullptr;
+        WindowAttention<T> *windowAttention = nullptr;
+        FeedForward<T> *feedForward = nullptr;
     };
 }
 #endif //SWIN_TRANSFORMER_CPP_SWIN_BLOCK_H

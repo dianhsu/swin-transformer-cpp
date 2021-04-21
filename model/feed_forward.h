@@ -20,11 +20,17 @@ namespace shift_window_transformer {
         }
 
         ~FeedForward() {
-            delete linear1;
-            delete linear2;
+            if (linear1 != nullptr) {
+                delete linear1;
+                linear1 = nullptr;
+            }
+            if (linear2 != nullptr) {
+                delete linear2;
+                linear2 = nullptr;
+            }
         }
 
-        void forward(const Tensor<T> &input, Tensor<T> &output) {
+        void forward(const Tensor <T> &input, Tensor <T> &output) {
             Tensor<T> tmp1{};
             linear1->forward(input, tmp1);
             Tensor<T> tmp2{};
@@ -36,8 +42,8 @@ namespace shift_window_transformer {
         }
 
     private:
-        Linear<T> *linear1;
-        Linear<T> *linear2;
+        Linear <T> *linear1 = nullptr;
+        Linear <T> *linear2 = nullptr;
         int dim;
         int hidden_dim;
     };

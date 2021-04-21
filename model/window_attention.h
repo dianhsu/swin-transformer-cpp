@@ -21,7 +21,8 @@ namespace shift_window_transformer {
                   scale(1 / sqrt(headDim)),
                   innerDim(heads * headDim),
                   windowSize(windowSize),
-                  relativePosEmbedding(relativePosEmbedding), to_qkv(dim, innerDim * 3, false), to_out(innerDim, dim) {
+                  relativePosEmbedding(relativePosEmbedding), to_qkv(dim, heads * headDim * 3, false),
+                  to_out(heads * headDim, dim) {
             if (shifted) {
                 int displacement = windowSize / 2;
                 cyclicShift = new CyclicShift<T>(-displacement);
@@ -56,6 +57,10 @@ namespace shift_window_transformer {
         }
 
         void forward(const Tensor<T> &input, Tensor<T> &output) {
+
+            output.resize(input.size());
+            output.shape = input.shape;
+
             Tensor<T> tmp{};
             if (shifted) {
                 cyclicShift->forward(input, tmp);
@@ -72,29 +77,43 @@ namespace shift_window_transformer {
         }
 
         ~WindowAttention() {
-            if (upperLowerMask != nullptr)
+            if (upperLowerMask != nullptr) {
                 delete upperLowerMask;
-            if (lowerRightMask != nullptr)
+                upperLowerMask = nullptr;
+            }
+
+
+            if (lowerRightMask != nullptr) {
                 delete lowerRightMask;
-            if (relativeIndices != nullptr)
+                lowerRightMask = nullptr;
+            }
+            if (relativeIndices != nullptr) {
                 delete relativeIndices;
-            if (posEmbedding != nullptr)
+                relativeIndices = nullptr;
+            }
+            if (posEmbedding != nullptr) {
                 delete posEmbedding;
-            if (cyclicShift != nullptr)
+                posEmbedding = nullptr;
+            }
+            if (cyclicShift != nullptr) {
                 delete cyclicShift;
-            if (cyclicBackShift != nullptr)
+                cyclicShift = nullptr;
+            }
+            if (cyclicBackShift != nullptr) {
                 delete cyclicBackShift;
+                cyclicBackShift = nullptr;
+            }
         }
 
     private:
-        CyclicShift<T> *cyclicShift;
-        CyclicShift<T> *cyclicBackShift;
+        CyclicShift<T> *cyclicShift = nullptr;
+        CyclicShift<T> *cyclicBackShift = nullptr;
         Linear<T> to_qkv;
         Linear<T> to_out;
-        Tensor<T> *upperLowerMask;
-        Tensor<T> *lowerRightMask;
-        Tensor<T> *relativeIndices;
-        Tensor<T> *posEmbedding;
+        Tensor<T> *upperLowerMask = nullptr;
+        Tensor<T> *lowerRightMask = nullptr;
+        Tensor<T> *relativeIndices = nullptr;
+        Tensor<T> *posEmbedding = nullptr;
         int windowSize;
         bool shifted;
         int innerDim;
