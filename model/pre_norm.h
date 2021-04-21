@@ -15,6 +15,15 @@ namespace shift_window_transformer {
         PreNorm(Layer <T> *fn, int dim) : fn(fn), layerNorm(dim) {
         }
 
+        long long parameterCount() {
+            long long ret = 0;
+            if (fn != nullptr) {
+                ret += fn->parameterCount();
+            }
+            ret += layerNorm.parameterCount();
+            return ret;
+        }
+
         void forward(const Tensor <T> &input, Tensor <T> &output) {
             Tensor<T> tmp{};
             layerNorm.forward(input, tmp);

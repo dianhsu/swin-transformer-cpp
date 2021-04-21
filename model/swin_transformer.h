@@ -61,6 +61,11 @@ namespace shift_window_transformer {
             linear.forward(tmp6, output);
         }
 
+        long long parameterCount() {
+            return stage1.parameterCount() + stage2.parameterCount() + stage3.parameterCount() +
+                   stage4.parameterCount() + layerNorm.parameterCount() + linear.parameterCount();
+        }
+
     private:
         StageModule<T> stage1;
         StageModule<T> stage2;

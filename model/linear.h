@@ -22,6 +22,12 @@ namespace shift_window_transformer {
                 bias = new std::vector<T>(out_feature, 0);
         }
 
+        long long parameterCount() {
+            if (use_bias)
+                return weights->size() + bias->size();
+            return weights->size();
+        }
+
         Linear(int i_feature, int o_feature) : Linear(i_feature, o_feature, true) {
         }
 
@@ -70,8 +76,8 @@ namespace shift_window_transformer {
 
     private:
         std::vector<T> *weights = nullptr, *bias = nullptr;
-        int in_feature, out_feature;
-        bool use_bias;
+        int in_feature{}, out_feature{};
+        bool use_bias{};
     };
 }
 #endif //SWIN_TRANSFORMER_CPP_LINEAR_H

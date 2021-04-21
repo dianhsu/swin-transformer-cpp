@@ -59,10 +59,14 @@ namespace shift_window_transformer {
             layer.forward(tmp, output);
         }
 
+        long long parameterCount() {
+            return layer.parameterCount();
+        }
+
     private:
-        int in_channels{};
-        int out_channels{};
-        int downscaling_factor{};
+        int in_channels;
+        int out_channels;
+        int downscaling_factor;
         Linear<T> layer;
     };
 }

@@ -41,6 +41,10 @@ namespace shift_window_transformer {
             linear2->forward(tmp2, output);
         }
 
+        long long parameterCount() {
+            return linear1->parameterCount() + linear2->parameterCount();
+        }
+
     private:
         Linear <T> *linear1 = nullptr;
         Linear <T> *linear2 = nullptr;

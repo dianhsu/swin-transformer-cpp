@@ -25,6 +25,29 @@ namespace shift_window_transformer {
             residual2 = new Residual<T>(preNorm2);
         }
 
+        long long parameterCount() {
+            long long ret = 0;
+            if (windowAttention) {
+                ret += windowAttention->parameterCount();
+            }
+            if (feedForward) {
+                ret += feedForward->parameterCount();
+            }
+            if (preNorm1) {
+                ret += preNorm1->parameterCount();
+            }
+            if (preNorm2) {
+                ret += preNorm2->parameterCount();
+            }
+            if (residual1) {
+                ret += residual1->parameterCount();
+            }
+            if (residual2) {
+                ret += residual2->parameterCount();
+            }
+            return ret;
+        }
+
         ~SwinBlock() {
             if (windowAttention != nullptr) {
                 delete windowAttention;

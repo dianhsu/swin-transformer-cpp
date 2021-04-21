@@ -19,6 +19,10 @@ namespace shift_window_transformer {
 
         LayerNorm(int dim, T eps, T beta, T gamma) : dim(dim), eps(eps), beta(beta), gamma(gamma) {}
 
+        long long parameterCount() {
+            return 0;
+        }
+
         void forward(const Tensor <T> &input, Tensor <T> &output) {
             assert(input.shape[input.shape.size() - 1] == dim);
             output.shape.clear();

@@ -19,6 +19,13 @@ namespace shift_window_transformer {
         explicit Residual(Layer<T> *fn) : fn(fn) {
         }
 
+        long long parameterCount() {
+            if (fn != nullptr) {
+                return fn->parameterCount();
+            }
+            return 0;
+        }
+
         void forward(const Tensor<T> &input, Tensor<T> &output) {
             assert(fn != nullptr);
             fn->forward(input, output);

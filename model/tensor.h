@@ -24,14 +24,17 @@ namespace shift_window_transformer {
         TensorShape shape;
 
         friend std::ostream &operator<<(std::ostream &os, const Tensor<T> &vec) {
+            int cnt = 1;
             os << "[" << vec.size() << "]";
             os << "[";
             for (auto i = 0; i < vec.shape.size(); ++i) {
                 if (i)
                     os << ", ";
                 os << vec.shape[i];
+                cnt *= vec.shape[i];
             }
             os << "]";
+            assert(cnt == vec.size());
             return os;
         }
     };

@@ -14,7 +14,9 @@ namespace shift_window_transformer {
     public:
         explicit CyclicShift(int displacement) : displacement(displacement) {
         }
-
+        long long parameterCount(){
+            return 0;
+        }
         void forward(const Tensor <T> &input, Tensor <T> &output) {
             assert(input.shape.size() >= 3);
             int feature_size = input.shape[1] * input.shape[2];

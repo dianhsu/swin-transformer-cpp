@@ -59,6 +59,14 @@ namespace shift_window_transformer {
             }
         }
 
+        long long parameterCount() {
+            long long ret = patch_partition.parameterCount();
+            for (int i = 0; i < layers.size(); ++i) {
+                ret += layers[i]->parameterCount();
+            }
+            return ret;
+        }
+
     private:
         PatchMerging<T> patch_partition;
         std::vector<SwinBlock<T> *> layers;

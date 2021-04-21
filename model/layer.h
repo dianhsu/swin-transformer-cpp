@@ -15,6 +15,10 @@ namespace shift_window_transformer {
         virtual void forward(const Tensor<T> &input, Tensor<T> &output) {
 
         }
+
+        virtual long long parameterCount() {
+            return 0;
+        }
     };
 
 }
