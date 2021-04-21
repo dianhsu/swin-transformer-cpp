@@ -107,7 +107,6 @@ namespace shift_window_transformer {
             reArrange(qTmp, q);
             reArrange(kTmp, k);
             reArrange(vTmp, v);
-            // TODO: TO FINISH THIS MODULE
             Tensor<T> dots{};
             int matX = q.shape[q.shape.size() - 2];
             int matY = q.shape[q.shape.size() - 1];
