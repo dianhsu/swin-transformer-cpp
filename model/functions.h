@@ -16,56 +16,56 @@ namespace shift_window_transformer {
     }
 
     template<typename T>
-    Tensor <T> *get_relative_distances(int window_size) {
+    Tensor <T> *get_relative_distances(int windowSize) {
         auto *ret = new Tensor<T>{};
         std::vector<std::pair<T, T>> tmp{};
-        for (int i = 0; i < window_size; ++i) {
-            for (int j = 0; j < window_size; ++j) {
+        for (int i = 0; i < windowSize; ++i) {
+            for (int j = 0; j < windowSize; ++j) {
                 tmp.emplace_back((T) i, (T) j);
             }
         }
-        for (int i1 = 0; i1 < window_size; ++i1) {
-            for (int j1 = 0; j1 < window_size; ++j1) {
-                for (int i2 = 0; i2 < window_size; ++i2) {
-                    for (int j2 = 0; j2 < window_size; ++j2) {
-                        ret->push_back(tmp[i2 * window_size + j2].first - tmp[i1 * window_size + j1].first);
-                        ret->push_back(tmp[i2 * window_size + j2].second - tmp[i1 * window_size + j1].second);
+        for (int i1 = 0; i1 < windowSize; ++i1) {
+            for (int j1 = 0; j1 < windowSize; ++j1) {
+                for (int i2 = 0; i2 < windowSize; ++i2) {
+                    for (int j2 = 0; j2 < windowSize; ++j2) {
+                        ret->push_back(tmp[i2 * windowSize + j2].first - tmp[i1 * windowSize + j1].first);
+                        ret->push_back(tmp[i2 * windowSize + j2].second - tmp[i1 * windowSize + j1].second);
                     }
                 }
             }
         }
         ret->shape = {
-                window_size * window_size,
-                window_size * window_size,
+                windowSize * windowSize,
+                windowSize * windowSize,
                 2
         };
         return ret;
     }
 
     template<typename T>
-    Tensor <T> *create_mask(int window_size, int displacement, bool upper_lower, bool left_right) {
-        int size_v2 = window_size * window_size;
-        auto *ret = new Tensor<T>(size_v2 * size_v2, 0);
-        ret->shape = {size_v2, size_v2};
-        if (upper_lower) {
-            for (int pos = 0; pos < size_v2 * size_v2; ++pos) {
-                int d1 = pos / size_v2;
-                int d2 = pos % size_v2;
-                if ((d1 >= -displacement * window_size and d2 < -displacement * window_size) or
-                    (d2 >= -displacement * window_size and d1 < -displacement * window_size)) {
-                    (*ret)[pos] = -FP_INFINITE;
+    Tensor <T> *create_mask(int windowSize, int displacement, bool upperLower, bool leftRight) {
+        int sizeV2 = windowSize * windowSize;
+        auto *ret = new Tensor<T>(sizeV2 * sizeV2, 0);
+        ret->shape = {sizeV2, sizeV2};
+        if (upperLower) {
+            for (int pos = 0; pos < sizeV2 * sizeV2; ++pos) {
+                int d1 = pos / sizeV2;
+                int d2 = pos % sizeV2;
+                if ((d1 >= sizeV2 - displacement * windowSize and d2 < sizeV2 - displacement * windowSize) or
+                    (d1 < sizeV2 - displacement * windowSize and d2 >= sizeV2 - displacement * windowSize)) {
+                    (*ret)[pos] = -INFINITY;
                 }
             }
         }
-        if (left_right) {
-            for (int pos = 0; pos < size_v2 * size_v2; ++pos) {
+        if (leftRight) {
+            for (int pos = 0; pos < sizeV2 * sizeV2; ++pos) {
                 int tmp = pos;
-                int d4 = tmp % window_size;
-                tmp /= size_v2;
-                int d2 = tmp % window_size;
-                if ((d2 >= -displacement and d4 < -displacement) or
-                    (d2 < -displacement and d4 >= -displacement)) {
-                    (*ret)[pos] = -FP_INFINITE;
+                int d4 = tmp % windowSize;
+                tmp /= sizeV2;
+                int d2 = tmp % windowSize;
+                if ((d2 >= windowSize - displacement and d4 < windowSize - displacement) or
+                    (d2 < windowSize - displacement and d4 >= windowSize - displacement)) {
+                    (*ret)[pos] = -INFINITY;
                 }
             }
         }

@@ -11,7 +11,7 @@
 #include "tensor.h"
 #include "patch_merging.h"
 #include "window_attention.h"
-
+#include "functions.h"
 using namespace std;
 typedef float data_t;
 //auto *swin_t = new shift_window_transformer::SwinTransformer<data_t>(
@@ -41,7 +41,6 @@ int main() {
         input.shape = {3, 224, 224};
         shift_window_transformer::Tensor<data_t> output{};
         swin_t->forward(input, output);
-        std::cout << swin_t->parameterCount() << std::endl;
         delete swin_t;
         std::cout << "Ok" << std::endl;
     } catch (...) {
