@@ -37,7 +37,7 @@ namespace shift_window_transformer {
                     sum += input[i + j];
                     sum2 += input[i + j] * input[i + j];
                 }
-                avg /= dim, avg2 /= dim;
+                avg = sum / dim, avg2 = sum2 / dim;
                 T varx = avg2 - avg * avg;
                 // y = \frac{x - E[x]}{\sqrt{Var[x] + \epsilon}} * \gamma + \beta
                 for (int j = 0; j < dim; ++j) {
