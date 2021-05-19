@@ -22,7 +22,7 @@ namespace shift_window_transformer {
                     sum += exp(input[i + j]);
                 }
                 for (int j = 0; j < dim; ++j) {
-                    output.push_back(input[i + j] / sum);
+                    output.push_back(exp(input[i + j]) / sum);
                 }
             }
         }
